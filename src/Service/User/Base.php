@@ -4,10 +4,11 @@ declare(strict_types=1);
 
 namespace App\Service\User;
 
+use DateTime;
 use App\Entity\User;
-use App\Repository\UserRepository;
 use App\Service\BaseService;
 use App\Service\RedisService;
+use App\Repository\UserRepository;
 use Respect\Validation\Validator as v;
 
 abstract class Base extends BaseService
@@ -45,6 +46,26 @@ abstract class Base extends BaseService
         }
 
         return (string) $email;
+    }
+
+    protected static function validateGender(string $gender): string
+    {
+        if( ! in_array($gender, \App\Entity\User::GENDERS)){
+            throw new \App\Exception\User('Invalid gender - please choose from male or female', 400);
+        }
+
+        return (string) $gender;
+    }
+
+    protected static function validateDateOfBirth(string $dateOfBirth): DateTime
+    {
+        if(! $dateOfBirth = DateTime::createFromFormat('Y-m-d', $dateOfBirth)){
+            throw new \App\Exception\User("The date of birth must be a valid date formatted as yyyy-mm-dd, e.g. 1970-01-01.", 400);
+        } else if ($dateOfBirth > (new DateTime('now'))->modify('-18 years')){
+            throw new \App\Exception\User("You must be at least 18 years old to use this application", 400);
+        }
+
+        return $dateOfBirth;
     }
 
     protected function getUserFromCache(int $userId): object

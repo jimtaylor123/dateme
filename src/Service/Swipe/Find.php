@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Service\Note;
+namespace App\Service\Swipe;
 
 final class Find extends Base
 {

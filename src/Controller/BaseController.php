@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Entity\User;
 use Slim\Container;
+use Slim\Http\Request;
 use Slim\Http\Response;
 
 abstract class BaseController
@@ -38,5 +40,15 @@ abstract class BaseController
     protected static function isRedisEnabled(): bool
     {
         return filter_var($_SERVER['REDIS_ENABLED'], FILTER_VALIDATE_BOOLEAN);
+    }
+
+    protected function getAuthenticatedUser(Request $request) : ?User
+    {
+        $body = $request->getParsedBody();
+        
+        if($email = $body['decoded']->email) {
+            $user = ($this->container->get('user_repository'))->getUserByEmail($email);
+            return $user;
+        }
     }
 }

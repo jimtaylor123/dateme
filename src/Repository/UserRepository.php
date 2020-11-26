@@ -10,7 +10,7 @@ final class UserRepository extends BaseRepository
 {
     public function getUser(int $userId): User
     {
-        $query = 'SELECT `id`, `name`, `email` FROM `users` WHERE `id` = :id';
+        $query = 'SELECT `id`, `name`, `email`, `gender`, `dateOfBirth` FROM `users` WHERE `id` = :id';
         $statement = $this->database->prepare($query);
         $statement->bindParam('id', $userId);
         $statement->execute();
@@ -20,6 +20,21 @@ final class UserRepository extends BaseRepository
         }
 
         return $user;
+    }
+
+    public function getUserByEmail(string $email): User
+    {
+        $query = 'SELECT * FROM `users` WHERE `email` = :email';
+        $statement = $this->database->prepare($query);
+        $statement->bindParam('email', $email);
+        $statement->execute();
+        $user = $statement->fetchObject(User::class);
+        if (! $user) {
+            throw new \App\Exception\User('User not found.', 404);
+        }
+
+        return $user;
+
     }
 
     public function checkUserByEmail(string $email): void
@@ -32,6 +47,21 @@ final class UserRepository extends BaseRepository
         if ($user) {
             throw new \App\Exception\User('Email already exists.', 400);
         }
+    }
+
+    public function getUnswipedProfiles(User $user) : array
+    {
+        $query = 'SELECT * FROM users 
+        WHERE gender != :gender
+        AND id not in (
+            SELECT profileId FROM swipes WHERE userId = :userId
+        )';
+
+        $statement = $this->database->prepare($query);
+        $statement->bindParam(':userId', $user->getId());
+        $statement->bindParam(':gender', $user->getGender());
+        $statement->execute();
+        return (array) $statement->FetchAll();
     }
 
     public function getUsersByPage(
@@ -73,7 +103,7 @@ final class UserRepository extends BaseRepository
 
     public function getAll(): array
     {
-        $query = 'SELECT `id`, `name`, `email` FROM `users` ORDER BY `id`';
+        $query = 'SELECT `id`, `name`, `email`, `gender`, `dateOfBirth` FROM `users` ORDER BY `id`';
         $statement = $this->database->prepare($query);
         $statement->execute();
 
@@ -104,17 +134,21 @@ final class UserRepository extends BaseRepository
     {
         $query = '
             INSERT INTO `users`
-                (`name`, `email`, `password`)
+                (`name`, `email`, `password`, `gender`, `dateOfBirth`)
             VALUES
-                (:name, :email, :password)
+                (:name, :email, :password, :gender, :dateOfBirth)
         ';
         $statement = $this->database->prepare($query);
         $name = $user->getName();
         $email = $user->getEmail();
         $password = $user->getPassword();
+        $gender = $user->getGender();
+        $dateOfBirth = $user->getDateOfBirth();
         $statement->bindParam('name', $name);
         $statement->bindParam('email', $email);
         $statement->bindParam('password', $password);
+        $statement->bindParam('gender', $gender);
+        $statement->bindParam('dateOfBirth', $dateOfBirth);
         $statement->execute();
 
         return $this->getUser((int) $this->database->lastInsertId());
@@ -123,15 +157,19 @@ final class UserRepository extends BaseRepository
     public function update(User $user): User
     {
         $query = '
-            UPDATE `users` SET `name` = :name, `email` = :email WHERE `id` = :id
+            UPDATE `users` SET `name` = :name, `email` = :email, `gender` = :gender, `dateOfBirth` = :dateOfBirth WHERE `id` = :id
         ';
         $statement = $this->database->prepare($query);
         $id = $user->getId();
         $name = $user->getName();
         $email = $user->getEmail();
+        $gender = $user->getGender();
+        $dateOfBirth = $user->getDateOfBirth();
         $statement->bindParam('id', $id);
         $statement->bindParam('name', $name);
         $statement->bindParam('email', $email);
+        $statement->bindParam('gender', $gender);
+        $statement->bindParam('dateOfBirth', $dateOfBirth);
         $statement->execute();
 
         return $this->getUser((int) $id);
