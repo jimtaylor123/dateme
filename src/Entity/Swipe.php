@@ -11,7 +11,7 @@ final class Swipe
 {
     use ArrayOrJsonResponse;
 
-    public const PREFERENCES = ['male', 'female'];
+    public const PREFERENCES = ['yes', 'no'];
     public const REQUIRED_FIELDS = ['userId', 'profileId', 'preference'];
 
     /** @var int */

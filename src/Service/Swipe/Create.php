@@ -40,10 +40,16 @@ final class Create extends Base
                 throw new \App\Exception\Swipe("The field \"$requirement\" is required.", 400);
             }
         }
-        // dd(self::validateProfileId($data->profileId));
+
+        try {
+            $profileUser = $this->userRepository->getUser($data->profileId);
+        } catch (\Throwable $th) {
+            throw new \App\Exception\Swipe('The user you are trying to swipe does not exist.', 400);
+        }
+
         $newSwipe = new Swipe();
-        $newSwipe->updateUserId(self::validateUserId($data->userId));
-        $newSwipe->updateProfileId(self::validateProfileId($data->profileId));
+        $newSwipe->updateUserId(self::validateUserId($data));
+        $newSwipe->updateProfileId($profileUser->getId());
         $newSwipe->updatePreference(self::validatePreference($data->preference));
         $newSwipe->updateCreatedAt(new DateTime('today'));
 

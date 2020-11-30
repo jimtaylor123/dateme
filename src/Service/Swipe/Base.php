@@ -4,14 +4,19 @@ declare(strict_types=1);
 
 namespace App\Service\Swipe;
 
+use App\Entity\User;
 use App\Entity\Swipe;
-use App\Repository\SwipeRepository;
 use App\Service\BaseService;
 use App\Service\RedisService;
+use App\Repository\UserRepository;
+use App\Repository\SwipeRepository;
 
 abstract class Base extends BaseService
 {
     private const REDIS_KEY = 'swipe:%s';
+
+     /** @var UserRepository */
+     protected $userRepository;
 
     /** @var SwipeRepository */
     protected $swipeRepository;
@@ -20,36 +25,33 @@ abstract class Base extends BaseService
     protected $redisService;
 
     public function __construct(
+        UserRepository $userRepository,
         SwipeRepository $swipeRepository,
         RedisService $redisService
     ) {
+        $this->userRepository = $userRepository;
         $this->swipeRepository = $swipeRepository;
         $this->redisService = $redisService;
     }
 
-    protected static function validateUserId(int $userId): int
+    protected static function validateUserId(object $data): int
     {
-        // if (! v::length(1, 50)->validate($name)) {
-        //     throw new \App\Exception\Swipe('The name of the swipe is invalid.', 400);
-        // }
+        if ($data->userId === $data->profileId) {
+            throw new \App\Exception\Swipe('You cannot swipe yourself.', 400);
+        }   
 
-        return $userId;
-    }
+        if ($data->userId !== $data->decoded->sub) {
+            throw new \App\Exception\Swipe('You cannot swipe on behalf of someone else.', 400);
+        }   
 
-    protected static function validateProfileId(int $profileId): int
-    {
-        // if (! v::length(1, 50)->validate($name)) {
-        //     throw new \App\Exception\Swipe('The name of the swipe is invalid.', 400);
-        // }
-
-        return $profileId;
+        return $data->userId;
     }
 
     protected static function validatePreference(string $preference): string
     {
-        // if (! v::length(1, 50)->validate($name)) {
-        //     throw new \App\Exception\Swipe('The name of the swipe is invalid.', 400);
-        // }
+        if (! in_array($preference, \App\Entity\Swipe::PREFERENCES)) {
+            throw new \App\Exception\Swipe('The preference is not valid.', 400);
+        }
 
         return $preference;
     }

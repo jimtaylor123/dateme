@@ -37,6 +37,7 @@ $container['find_swipe_service'] = static function (
     ContainerInterface $container
 ): Swipe\Find {
     return new Swipe\Find(
+        $container->get('user_repository'),
         $container->get('swipe_repository'),
         $container->get('redis_service')
     );
@@ -46,6 +47,7 @@ $container['create_swipe_service'] = static function (
     ContainerInterface $container
 ): Swipe\Create {
     return new Swipe\Create(
+        $container->get('user_repository'),
         $container->get('swipe_repository'),
         $container->get('redis_service')
     );
