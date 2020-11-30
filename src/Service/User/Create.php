@@ -45,6 +45,8 @@ final class Create extends Base
         $this->userRepository->checkUserByEmail($user->email);
         $myuser->updateGender(self::validateGender($user->gender));
         $myuser->updateDateOfBirth(self::validateDateOfBirth($user->dateOfBirth));
+        $myuser->updateLat(self::validateLat($user->lat));
+        $myuser->updateLng(self::validateLng($user->lng));
 
         return $myuser;
     }

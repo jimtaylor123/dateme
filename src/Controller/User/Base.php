@@ -17,11 +17,6 @@ abstract class Base extends BaseController
         return $this->container->get('create_user_service');
     }
 
-    protected function getFindUserService(): Find
-    {
-        return $this->container->get('find_user_service');
-    }
-
     protected function getLoginUserService(): Login
     {
         return $this->container->get('login_user_service');

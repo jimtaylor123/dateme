@@ -11,8 +11,8 @@ final class User
 {
     use ArrayOrJsonResponse;
 
-    public const GENDERS = ['male', 'female'];
-    public const REQUIRED_FIELDS = ['name', 'email', 'password', 'gender', 'dateOfBirth'];
+    public const GENDERS = ['male', 'female', 'other'];
+    public const REQUIRED_FIELDS = ['name', 'email', 'password', 'gender', 'dateOfBirth', 'lat', 'lng'];
 
     /** @var int */
     private $id;
@@ -32,6 +32,11 @@ final class User
     /** @var DateTime */
     private $dateOfBirth;
 
+     /** @var float */
+     private $lat;
+
+      /** @var float */
+    private $lng;
 
     public function getId(): int
     {
@@ -109,6 +114,36 @@ final class User
     public function updateGender(string $gender): self
     {
         $this->gender = $gender;
+
+        return $this;
+    }
+
+    /**
+     * Latitude
+     */
+    public function getLat(): float
+    {
+        return $this->lat;
+    }
+
+    public function updateLat(float $lat): self
+    {
+        $this->lat = $lat;
+
+        return $this;
+    }
+
+    /**
+     * Longitude
+     */
+    public function getLng(): float
+    {
+        return $this->lng;
+    }
+
+    public function updateLng(float $lng): self
+    {
+        $this->lng = $lng;
 
         return $this;
     }

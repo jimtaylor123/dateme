@@ -68,6 +68,32 @@ abstract class Base extends BaseService
         return $dateOfBirth;
     }
 
+    protected static function validateLat($lat) : float
+    {
+        if( ! is_float($lat) ){
+            throw new \App\Exception\User("The supplied latitude is invalid", 400);
+        }
+        
+        if( $lat < -90 || $lat > 90){
+            throw new \App\Exception\User("The supplied latitude is invalid", 400);
+        }
+
+        return $lat;
+    }
+
+    protected static function validateLng($lng) : float
+    {
+        if( ! is_float($lng) ){
+            throw new \App\Exception\User("The supplied latitude is invalid", 400);
+        }
+        
+        if( $lng < -180 || $lng > 180){
+            throw new \App\Exception\User("The supplied latitude is invalid", 400);
+        }
+
+        return $lng;
+    }
+
     protected function getUserFromCache(int $userId): object
     {
         $redisKey = sprintf(self::REDIS_KEY, $userId);

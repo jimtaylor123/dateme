@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Service\User;
 
 use App\Entity\User;
+use Slim\Http\Request;
 
 final class Profiles extends Base
 {
@@ -45,8 +46,8 @@ final class Profiles extends Base
         return $user;
     }
 
-    public function getProfilesFor(User $user) 
+    public function getProfilesFor(User $user, Request $request) 
     {
-        return $this->userRepository->getUnswipedProfiles($user);
+        return $this->userRepository->getUnswipedProfiles($user, $request);
     }
 }

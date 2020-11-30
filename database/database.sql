@@ -27,6 +27,8 @@ CREATE TABLE `users` (
   `password` varchar(128) NOT NULL,
   `gender` ENUM('male', 'female', 'other') NOT NULL,
   `dateOfBirth` date NOT NULL,
+  `lat` decimal(10,8) NOT NULL,
+  `lng` decimal(11,8) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
