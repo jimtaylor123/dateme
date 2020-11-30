@@ -6,7 +6,7 @@ build:
     environment:
         variables:
             DB_HOST: '127.0.0.1'
-            DB_NAME: 'rest_api_slim_php'
+            DB_NAME: 'date_me_api'
             DB_USER: 'root'
             DB_PASS: ''
             DB_PORT: '3306'
@@ -17,8 +17,8 @@ build:
             version: 7.4
     project_setup:
         before:
-            - mysql -e "CREATE DATABASE rest_api_slim_php"
-            - mysql rest_api_slim_php < database/database.sql
+            - mysql -e "CREATE DATABASE date_me_api"
+            - mysql date_me_api < database/database.sql
         override:
             - php-scrutinizer-run
             -

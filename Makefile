@@ -2,7 +2,7 @@
 
 MAKEPATH := $(abspath $(lastword $(MAKEFILE_LIST)))
 PWD := $(dir $(MAKEPATH))
-CONTAINERS := $(shell docker ps -a -q -f "name=rest-api-slim-php*")
+CONTAINERS := $(shell docker ps -a -q -f "name=date-me-api*")
 
 up:
 	docker-compose up -d --build
@@ -11,20 +11,20 @@ down:
 	docker-compose down
 
 nginx:
-	docker exec -it rest-api-slim-php-nginx-container bash
+	docker exec -it date-me-nginx-container bash
 
 php: 
-	docker exec -it rest-api-slim-php-php-container bash
+	docker exec -it date-me-php-container bash
 
 phplog: 
-	docker logs rest-api-slim-php-php-container
+	docker logs date-me-php-container
 
 nginxlog:
-	docker logs rest-api-slim-php-nginx-container
+	docker logs date-me-nginx-container
 
 db:
-	docker-compose exec mysql mysql -e 'DROP DATABASE IF EXISTS rest_api_slim_php ; CREATE DATABASE rest_api_slim_php;'
-	docker-compose exec mysql sh -c "mysql rest_api_slim_php < docker-entrypoint-initdb.d/database.sql"
+	docker-compose exec mysql mysql -e 'DROP DATABASE IF EXISTS date_me_api ; CREATE DATABASE date_me_api;'
+	docker-compose exec mysql sh -c "mysql date_me_api < docker-entrypoint-initdb.d/database.sql"
 
 coverage:
 	docker-compose exec php-fpm sh -c "./vendor/bin/phpunit --coverage-text --coverage-html coverage"

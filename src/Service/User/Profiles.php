@@ -9,32 +9,6 @@ use Slim\Http\Request;
 
 final class Profiles extends Base
 {
-    public function getUsersByPage(
-        int $page,
-        int $perPage,
-        ?string $name,
-        ?string $email
-    ): array {
-        if ($page < 1) {
-            $page = 1;
-        }
-        if ($perPage < 1) {
-            $perPage = self::DEFAULT_PER_PAGE_PAGINATION;
-        }
-
-        return $this->userRepository->getUsersByPage(
-            $page,
-            $perPage,
-            $name,
-            $email
-        );
-    }
-
-    public function getAll(): array
-    {
-        return $this->userRepository->getAll();
-    }
-
     public function getOne(int $userId): object
     {
         if (self::isRedisEnabled() === true) {
@@ -46,8 +20,17 @@ final class Profiles extends Base
         return $user;
     }
 
-    public function getProfilesFor(User $user, Request $request) 
+    public function getProfiles(Request $request) 
     {
-        return $this->userRepository->getUnswipedProfiles($user, $request);
+        $profiles = $this->userRepository->getProfiles($request);
+        $images = $this->imageRepository->getUserImages($profiles);
+        $scheme = $request->getServerParams()['REQUEST_SCHEME'];
+        $host = $request->getServerParams()['HTTP_HOST'];
+         foreach ($images as $image) {
+             $image['url'] = "$scheme://$host/images/{$image['name']}";
+             $profiles[$image['userId']]['images'][] = $image;
+         }
+
+        return $profiles;
     }
 }

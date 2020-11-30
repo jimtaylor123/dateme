@@ -9,6 +9,7 @@ use App\Entity\User;
 use App\Service\BaseService;
 use App\Service\RedisService;
 use App\Repository\UserRepository;
+use App\Repository\ImageRepository;
 use Respect\Validation\Validator as v;
 
 abstract class Base extends BaseService
@@ -18,14 +19,19 @@ abstract class Base extends BaseService
     /** @var UserRepository */
     protected $userRepository;
 
+    /** @var ImageRepository */
+    protected $imageRepository;
+
     /** @var RedisService */
     protected $redisService;
 
     public function __construct(
         UserRepository $userRepository,
+        ImageRepository $imageRepository,
         RedisService $redisService
     ) {
         $this->userRepository = $userRepository;
+        $this->imageRepository = $imageRepository;
         $this->redisService = $redisService;
     }
 

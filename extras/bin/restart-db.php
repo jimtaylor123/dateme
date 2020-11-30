@@ -6,6 +6,7 @@ require __DIR__ . '/../../src/App/App.php';
 
 try {
     $db = $container->get('settings')['db'];
+
     $host = $db['host'];
     $name = $db['name'];
     $user = $db['user'];

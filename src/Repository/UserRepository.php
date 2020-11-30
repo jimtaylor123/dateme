@@ -59,9 +59,11 @@ final class UserRepository extends BaseRepository
         }
     }
 
-    public function getUnswipedProfiles(User $user, Request $request): array
+    public function getProfiles(Request $request): array
     {
         $this->profileQuery = $this->baseQuery();
+
+        $user = $this->getUser($request->getParsedBody()['decoded']->sub);
 
         $this->params[':id'] = $this->params[':userId'] = $user->getId();
 
@@ -76,7 +78,15 @@ final class UserRepository extends BaseRepository
         }
 
         $this->profileStatement->execute();
-        return (array) $this->profileStatement->FetchAll();
+        $profiles = (array) $this->profileStatement->FetchAll();
+
+        $keyed = array();
+        foreach ($profiles as $profile)
+        {
+            $keyed[$profile['id']] = $profile;
+        }
+
+        return $keyed;
     }
 
     private function baseQuery()
@@ -162,9 +172,9 @@ final class UserRepository extends BaseRepository
         $this->profileQuery .= " AND u.id != :userId GROUP BY u.id";
 
         if( $request->getQueryParam('orderByPopular') === "first"){
-            $this->query .= " ORDER BY yesSwipes desc, distance desc;";
+            $this->profileQuery .= " ORDER BY yesSwipes desc, distance desc;";
         } else {
-            $this->query .= " ORDER BY distance desc, yesSwipes desc;";
+            $this->profileQuery .= " ORDER BY distance desc, yesSwipes desc;";
         }
     }
 

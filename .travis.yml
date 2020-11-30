@@ -12,7 +12,7 @@ env:
   global:
     - CC_TEST_REPORTER_ID=5acc45b5f48d4ca2a5baa0d22ee9a10890b29a76b3ef34a936fdd0ba8c5d7ba8
     - DB_HOST=127.0.0.1
-    - DB_NAME=rest_api_slim_php
+    - DB_NAME=date_me_api
     - DB_USER=root
     - DB_PASS=
     - DB_PORT=3306
@@ -23,10 +23,10 @@ env:
     - REDIS_URL=localhost
 
 before_install:
-  - mysql -e 'CREATE DATABASE rest_api_slim_php;'
+  - mysql -e 'CREATE DATABASE date_me_api;'
 
 before_script:
-  - mysql rest_api_slim_php < database/database.sql
+  - mysql date_me_api < database/database.sql
   - composer install
   - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter 
   - chmod +x ./cc-test-reporter 

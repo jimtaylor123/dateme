@@ -25,12 +25,12 @@ abstract class Base extends BaseService
     protected $redisService;
 
     public function __construct(
-        UserRepository $userRepository,
         SwipeRepository $swipeRepository,
+        UserRepository $userRepository,
         RedisService $redisService
     ) {
-        $this->userRepository = $userRepository;
         $this->swipeRepository = $swipeRepository;
+        $this->userRepository = $userRepository;
         $this->redisService = $redisService;
     }
 
@@ -55,11 +55,6 @@ abstract class Base extends BaseService
 
         return $preference;
     }
-
-
-        // check logged in user is swiping user
-        // check user is not swiping self
-        // check swiping user exists
 
     protected function getOneFromCache(int $swipeId): object
     {
