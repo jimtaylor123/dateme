@@ -50,8 +50,10 @@ I have tried to fulfil the requirements given, but there are still some rough co
 * I would like to have cropped the centre of the images, not just 100x100.
 * I would like to have created a make or bash script for set up.
 * The format of the json responses leaves something to be desired, I would have preferred to have coded a cull json-api standard response.
-* I did not have time to create a swagger file
+* I did not have time to create a swagger file.
 
-### Auth
+There are also some things I would like to clarify:
 
-The boilerplate initially used an auth package, but after reading the brief I have commented this out and replaced it with my own code for producing the jwt. 
+* The boilerplate initially used an auth package, but after reading the brief I have commented this out and replaced it with my own code for producing the jwt. I have deliberately left the jwt code commented out so you can see my workings.
+* I have deliberately commited the .env file, there is nothing significant in it. 
+* I have set redis cache to false, but it does work for me locally, though not for phpunit tests.
