@@ -8,6 +8,7 @@ use Slim\App;
 use Slim\Http\Request;
 use Slim\Http\Response;
 use Slim\Http\Environment;
+use Slim\Http\UploadedFile;
 use Psr\Http\Message\ResponseInterface;
 
 class BaseTestCase extends \PHPUnit\Framework\TestCase
@@ -18,18 +19,31 @@ class BaseTestCase extends \PHPUnit\Framework\TestCase
     public function runApp(
         string $requestMethod,
         string $requestUri,
-        array $requestData = null
+        array $requestData = null,
+        bool $fileUpload = false,
+        bool $unAuthenticated = false
     ): ResponseInterface {
 
-        $environment = Environment::mock(
-            [
-                'REQUEST_METHOD' => $requestMethod,
-                'REQUEST_URI' => $requestUri
-            ]
-        );
+        $envArray = [
+            'REQUEST_METHOD' => $requestMethod,
+            'REQUEST_URI' => $requestUri
+        ];
 
+        if($fileUpload ){
+            $envArray['CONTENT_TYPE'] = 'multipart/form-data';
+            $envArray['slim.files'] = $requestData;
+        } 
+        
+        if(strpos($requestUri, "?") > -1){
+            $envArray['QUERY_STRING'] = substr($requestUri, strpos($requestUri, "?") + 1);
+        }
+
+        $environment = Environment::mock($envArray);
         $request = Request::createFromEnvironment($environment);
-        $request = $request->withHeader('Authorization', self::$jwt);
+
+        if(! $unAuthenticated){
+            $request = $request->withHeader('Authorization', self::$jwt);
+        }
 
         if (isset($requestData)) {
             $request = $request->withParsedBody($requestData);

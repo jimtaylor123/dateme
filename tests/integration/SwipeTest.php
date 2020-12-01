@@ -6,33 +6,28 @@ namespace Tests\integration;
 
 class SwipeTest extends BaseTestCase
 {
-    /**
-     * @var int
-     */
-    private static $id;
+    // public function testCreateSwipe()
+    // {
 
-    public function testCreateSwipe()
-    {
+    // }
 
-    }
+    // public function testCreateSwipeWithoutMatch()
+    // {
 
-    public function testCreateSwipeWithoutMatch()
-    {
+    // }
 
-    }
-
-    public function testCreateSwipeWithMatch()
-    {
+    // public function testCreateSwipeWithMatch()
+    // {
         
-    }
+    // }
 
-    public function testCreateSwipeWithSelf()
-    {
+    // public function testCreateSwipeWithSelf()
+    // {
         
-    }
+    // }
 
-    public function testCreateSwipeUnauthenticated()
-    {
+    // public function testCreateSwipeUnauthenticated()
+    // {
         
-    }
+    // }
 }

@@ -1,11 +1,24 @@
-# set up
+# Date-me  ❤️
+
+By: James Taylor
+For: Muzmatch
+Date: 01/12/2020
+
+## General info
+
+I have adapted a [boilerplate slim php api](https://github.com/maurobonfietti/rest-api-slim-php), since I consider it to have some good patterns in it such as repository, service and invokable classes for the controller routes.
+I am not ashamed to have used this template, since I consider it a good use of time, I was able to concentrate my efforts on fulfilling the brief, and I have done a considerable amount of customization. One example is updating the docker file to use the gd extension for image processing.
+## How to set up
+
+> NB: If you have any issues setting this up please contact me and I will be happy to help: jim@jimtaylor.space
 
 This guide assumes the following set up: 
 
 * Mac OS
-* gitdocker
+* git
+* docker
 * docker compose
-* make
+* make (for windows see below)
 * There are no services running on the following ports:
   * 8081
   * 63790
@@ -27,10 +40,18 @@ This guide assumes the following set up:
    2.  connect to the db 
        1.  on http://localhost:8888/ using username 'root' and no password, or ...
        2.  you can use a programme like sequel pro or tables plus using the same username anbd password and host localhost port 33060
-   3. Run all php unit tests with the following command `composer test`
-   
-Interact with system
-1. Get status
-2. Create user
-3. Login as user
-4. 
+   3. Run all php unit tests with the following command `composer test`. After each test run `composer restart-db` to reset the db back to it's original state.
+
+## Comments 
+
+I have tried to fulfil the requirements given, but there are still some rough corners due to lack of time.
+
+* There are no tests for swipes. 
+* I would like to have cropped the centre of the images, not just 100x100.
+* I would like to have created a make or bash script for set up.
+* The format of the json responses leaves something to be desired, I would have preferred to have coded a cull json-api standard response.
+* I did not have time to create a swagger file
+
+### Auth
+
+The boilerplate initially used an auth package, but after reading the brief I have commented this out and replaced it with my own code for producing the jwt. 

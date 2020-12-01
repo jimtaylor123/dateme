@@ -34,17 +34,12 @@ final class DefaultController extends BaseController
 
     public function getStatus(Request $request, Response $response): Response
     {
-        try {
-            $status = [
-                'MySQL' => 'OK',
-                'Redis' => $this->checkRedisConnection(),
-                'version' => self::API_VERSION,
-                'timestamp' => time(),
-            ];
-        } catch (\Throwable $th) {
-            dd($th);
-        }
-       
+        $status = [
+            'MySQL' => 'OK',
+            'Redis' => $this->checkRedisConnection(),
+            'version' => self::API_VERSION,
+            'timestamp' => time(),
+        ];
 
         return $this->jsonResponse($response, 'success', $status, 200);
     }

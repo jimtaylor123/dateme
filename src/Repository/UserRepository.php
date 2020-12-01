@@ -76,8 +76,8 @@ final class UserRepository extends BaseRepository
         foreach ($this->params as $key => $param) {
             $this->profileStatement->bindParam($key, $param);
         }
-
         $this->profileStatement->execute();
+
         $profiles = (array) $this->profileStatement->FetchAll();
 
         $keyed = array();
@@ -121,10 +121,10 @@ final class UserRepository extends BaseRepository
             $userGender = $user->getGender();
             switch ($userGender) {
                 case 'male':
-                    $this->profileQuery .= ' AND u.gender = "female"';
+                    $this->profileQuery .= ' AND u.gender = "female" ';
                     break;
                 case 'female':
-                    $this->profileQuery .= ' AND u.gender = "male"';
+                    $this->profileQuery .= ' AND u.gender = "male" ';
                     break;
                     // case 'other':
                     //     break;
@@ -151,15 +151,14 @@ final class UserRepository extends BaseRepository
 
         if ($minAge) {
             $latest = (new \DateTime('now'))->modify("-$minAge years")->format('Y-m-d');
-            $this->params[':latest'] = $latest;
-            $this->profileQuery .= " AND u.dateOfBirth < :latest";
+            $this->profileQuery .= " AND u.dateOfBirth < \"$latest\"";
         }
 
         if ($maxAge) {
             $earliest = (new \DateTime('now'))->modify("-$maxAge years")->format('Y-m-d');
-            $this->params[':earliest'] = $earliest;
-            $this->profileQuery .= " AND u.dateOfBirth > :earliest";
+            $this->profileQuery .= " AND u.dateOfBirth > \"$earliest\"";
         }
+
     }
 
     /**
@@ -208,13 +207,21 @@ final class UserRepository extends BaseRepository
         ';
         $statement = $this->database->prepare($query);
 
-        $statement->bindParam('name', $user->getName());
-        $statement->bindParam('email', $user->getEmail());
-        $statement->bindParam('password', $user->getPassword());
-        $statement->bindParam('gender', $user->getGender());
-        $statement->bindParam('dateOfBirth', $user->getDateOfBirth());
-        $statement->bindParam('lat', $user->getLat());
-        $statement->bindParam('lng', $user->getLng());
+        $name = $user->getName();
+        $email = $user->getEmail();
+        $password = $user->getPassword();
+        $gender = $user->getGender();
+        $dateOfBirth = $user->getDateOfBirth();
+        $lat = $user->getLat();
+        $lng = $user->getLng();
+
+        $statement->bindParam('name', $name);
+        $statement->bindParam('email', $email);
+        $statement->bindParam('password', $password);
+        $statement->bindParam('gender', $gender);
+        $statement->bindParam('dateOfBirth', $dateOfBirth);
+        $statement->bindParam('lat', $lat);
+        $statement->bindParam('lng', $lng);
         $statement->execute();
 
         return $this->getUser((int) $this->database->lastInsertId());

@@ -36,23 +36,6 @@ abstract class Base extends BaseService
         $this->redisService = $redisService;
     }
 
-    protected static function validateUserId(Request $request): int
-    {
-          // Check user id is auth user 
-          $data = json_decode((string) json_encode((array) $request->getParsedBody()), false);
-          if (! isset($data->userId)) {
-              throw new \App\Exception\Image("The field \"userId\" is required.", 400);
-          }
-
-          
-        if ((int) $data->userId !== (int) $data->decoded->sub) {
-            throw new \App\Exception\Image('You cannot create an image on behalf of someone else.', 400);
-        }   
-
-        return (int) $data->userId;
-    }
-
-
     protected static function createUniqueName(): string
     {
         $name = str_replace(".", "-", uniqid('', true)). ".jpeg";

@@ -15,9 +15,9 @@ final class ImageRepository extends BaseRepository
         $path = __DIR__."/../../public/images/{$image->getName()}";
         try {
 
-            $file = $this->resize($file);
+            $resizedFile = $this->resize($file);
 
-            imagejpeg($file, $path);
+            imagejpeg($resizedFile, $path);
 
             $query = '
             INSERT INTO `images`
@@ -27,9 +27,12 @@ final class ImageRepository extends BaseRepository
             ';
             $statement = $this->database->prepare($query);
     
-            $statement->bindParam(':userId', $image->getUserId());
-            $statement->bindParam(':name', $image->getName());
-            $statement->bindParam(':createdAt', $image->getCreatedAt());
+            $userId = $image->getUserId();
+            $name = $image->getName();
+            $createdAt = $image->getCreatedAt();
+            $statement->bindParam(':userId', $userId);
+            $statement->bindParam(':name', $name);
+            $statement->bindParam(':createdAt', $createdAt);
             
             $statement->execute();
 
@@ -92,6 +95,10 @@ final class ImageRepository extends BaseRepository
 
     public function getUserImages(array $images) : array
     {
+        if( empty($images)){
+            return [];
+        }
+
         $userIds = "(" . implode(", ", array_column($images, 'id')) . ")";
 
         $query = "SELECT * FROM `images` WHERE `userId` in $userIds ORDER BY userId";

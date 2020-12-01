@@ -15,6 +15,11 @@ final class Create extends Base
     public function create(Request $request): array
     {
         $files = $request->getUploadedFiles();
+
+        if(empty($files)){
+            throw new \App\Exception\Image("Please provide at least one file", 400);
+        }
+
         $images = [];
         foreach($files as $key => $file){
             $data[$key] = $this->validateImageData($file, $request);
@@ -46,8 +51,10 @@ final class Create extends Base
             throw new \App\Exception\Image("The file '" . $file->getClientFilename() . "' is not in an acceptable format - acceptable formats include: " . implode(", ", Image::MIME_TYPES), 400);
         };
 
+        $authUserId = $request->getParsedBody()["decoded"]->sub;
+
         $newImage = new Image();
-        $newImage->updateUserId(self::validateUserId($request));
+        $newImage->updateUserId($authUserId);
         $newImage->updateName(self::createUniqueName());
         $newImage->updateCreatedAt(new DateTime('today'));
 

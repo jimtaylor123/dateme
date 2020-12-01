@@ -6,10 +6,6 @@ namespace Tests\integration;
 
 class UserTest extends BaseTestCase
 {
-    /**
-     * @var int
-     */
-    private static $id;
 
     /**
      * Test Create User.
@@ -17,13 +13,10 @@ class UserTest extends BaseTestCase
     public function testCreateUser(): void
     {
         $response = $this->runApp(
-            'POST', '/api/v1/users',
-            ['name' => 'Esteban', 'email' => 'estu@gmail.com', 'password' => 'AnyPass1000']
+            'POST', '/user/create'
         );
 
         $result = (string) $response->getBody();
-
-        self::$id = json_decode($result)->message->id;
 
         $this->assertEquals(201, $response->getStatusCode());
         $this->assertEquals('application/json', $response->getHeaderLine('Content-Type'));
@@ -32,102 +25,17 @@ class UserTest extends BaseTestCase
         $this->assertStringContainsString('name', $result);
         $this->assertStringContainsString('email', $result);
         $this->assertStringNotContainsString('error', $result);
+
+        
     }
 
-    /**
-     * Test Create User Without Name.
-     */
-    public function testCreateUserWithoutName(): void
-    {
-        $response = $this->runApp('POST', '/api/v1/users');
-
-        $result = (string) $response->getBody();
-
-        $this->assertEquals(400, $response->getStatusCode());
-        $this->assertEquals('application/problem+json', $response->getHeaderLine('Content-Type'));
-        $this->assertStringNotContainsString('success', $result);
-        $this->assertStringNotContainsString('id', $result);
-        $this->assertStringNotContainsString('email', $result);
-        $this->assertStringContainsString('error', $result);
-    }
-
-    /**
-     * Test Create User Without Email.
-     */
-    public function testCreateUserWithoutEmail(): void
-    {
-        $response = $this->runApp('POST', '/api/v1/users', ['name' => 'z']);
-
-        $result = (string) $response->getBody();
-
-        $this->assertEquals(400, $response->getStatusCode());
-        $this->assertEquals('application/problem+json', $response->getHeaderLine('Content-Type'));
-        $this->assertStringNotContainsString('success', $result);
-        $this->assertStringNotContainsString('id', $result);
-        $this->assertStringContainsString('error', $result);
-    }
-
-    /**
-     * Test Create User With Invalid Name.
-     */
-    public function testCreateUserWithInvalidName(): void
-    {
-        $response = $this->runApp(
-            'POST', '/api/v1/users',
-            ['name' => 'z', 'email' => 'email@example.com']
-        );
-
-        $result = (string) $response->getBody();
-
-        $this->assertEquals(400, $response->getStatusCode());
-        $this->assertEquals('application/problem+json', $response->getHeaderLine('Content-Type'));
-        $this->assertStringNotContainsString('success', $result);
-        $this->assertStringNotContainsString('email', $result);
-        $this->assertStringContainsString('error', $result);
-    }
-
-    /**
-     * Test Create User With Invalid Email.
-     */
-    public function testCreateUserWithInvalidEmail(): void
-    {
-        $response = $this->runApp(
-            'POST', '/api/v1/users',
-            ['name' => 'Esteban', 'email' => 'email.incorrecto', 'password' => 'AnyPass1000']
-        );
-
-        $result = (string) $response->getBody();
-
-        $this->assertEquals(400, $response->getStatusCode());
-        $this->assertEquals('application/problem+json', $response->getHeaderLine('Content-Type'));
-        $this->assertStringNotContainsString('success', $result);
-        $this->assertStringContainsString('error', $result);
-    }
-
-    /**
-     * Test Create User With An Email That Already Exists.
-     */
-    public function testCreateUserWithEmailAlreadyExists(): void
-    {
-        $response = $this->runApp(
-            'POST', '/api/v1/users',
-            ['name' => 'Esteban', 'email' => 'estu@gmail.com', 'password' => 'AnyPass1000']
-        );
-
-        $result = (string) $response->getBody();
-
-        $this->assertEquals(400, $response->getStatusCode());
-        $this->assertEquals('application/problem+json', $response->getHeaderLine('Content-Type'));
-        $this->assertStringNotContainsString('success', $result);
-        $this->assertStringContainsString('error', $result);
-    }
-
+    
     /**
      * Test that user login endpoint it is working fine.
      */
     public function testLoginUser(): void
     {
-        $response = $this->runApp('POST', '/login', ['email' => 'test@user.com', 'password' => 'AnyPass1000']);
+        $response = $this->runApp('POST', '/login', ['email' => 'soberbrunner@terry.com', 'password' => 'FA$`rR*S']);
 
         $result = (string) $response->getBody();
 
